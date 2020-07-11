@@ -8,8 +8,12 @@
     
     {% if entry != None %}
     {{ entry|safe }}
+    <br>
+    <a href="{% url 'edit' title=title %}">Edit entry</a>
     {% else %}
     <h1>Error</h1>
     This entry does not extist.
     {% endif %}
+
+    
 {% endblock %}

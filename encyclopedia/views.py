@@ -10,7 +10,7 @@ from . import util
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "titles": util.list_entries()
     })
 
 
@@ -58,3 +58,21 @@ def new(request):
                 
     else:
         return render(request, "encyclopedia/new.html")
+
+def edit(request, title):
+    if request.method == "POST":
+        if request.POST['title'] != '':
+            title = request.POST['title']
+        else:
+            title = title
+        content = request.POST['content']
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse('entry', args=(title,)))
+    else:
+
+        entry = util.get_entry(title)
+        context = {
+            "title": title,
+            "entry": entry
+        }
+        return render(request, 'encyclopedia/edit.html', context)
