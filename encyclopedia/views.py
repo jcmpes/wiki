@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 
+import markdown
+
 from . import util
 
 
@@ -9,9 +11,11 @@ def index(request):
     })
 
 def entry(request, title):
+    md = markdown.Markdown()
+    md_entry = md.convert(util.get_entry(title))
     context = {
         "title": title,
-        "entry": util.get_entry(title)
+        "entry": md_entry
     }
     return render(request, "encyclopedia/entry.html", context)
 
