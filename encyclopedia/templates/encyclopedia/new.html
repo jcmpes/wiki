@@ -6,10 +6,11 @@
 
 {% block body %}
     <h1>Add new entry</h1>
-    <form action="">
+    <form action="." method="POST">
+        {% csrf_token %}
         <input type="text" placeholder="Title" name="title">
-        <input type="text">
-        <button type="submit"></button>
+        <textarea name="content" rows="10" cols="40"></textarea>
+        <button type="submit">Save</button>
     </form>
     
 {% endblock %}

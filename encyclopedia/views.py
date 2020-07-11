@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 import markdown
 
@@ -10,6 +13,7 @@ def index(request):
         "entries": util.list_entries()
     })
 
+
 def entry(request, title):
     md = markdown.Markdown()
     md_entry = md.convert(util.get_entry(title))
@@ -18,6 +22,7 @@ def entry(request, title):
         "entry": md_entry
     }
     return render(request, "encyclopedia/entry.html", context)
+
 
 def search(request):
     query = request.GET.get('q')
@@ -37,3 +42,19 @@ def search(request):
             "results": results
         }
         return render(request, "encyclopedia/search.html", context)
+
+
+def new(request):
+    if request.method == "POST":
+        title = request.POST['title']
+        content = request.POST['content']
+        entries = util.list_entries()
+        for item in entries:
+            if item == title:
+                messages.add_message(request, messages.ERROR, 'Entry already exists.')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse('entry', args=(title,)))
+                
+    else:
+        return render(request, "encyclopedia/new.html")
