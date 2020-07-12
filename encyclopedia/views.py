@@ -4,13 +4,14 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 import markdown
+from random import randint
 
 from . import util
 
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
-        "titles": util.list_entries()
+        "entries": util.list_entries()
     })
 
 
@@ -76,3 +77,15 @@ def edit(request, title):
             "entry": entry
         }
         return render(request, 'encyclopedia/edit.html', context)
+
+def random(request):
+
+    entries = util.list_entries()
+    selection = randint(0,len(entries)-1)
+    md = markdown.Markdown()
+    entry = md.convert(util.get_entry(entries[selection]))
+    context = {
+        "title": entries[selection].title,
+        "entry": entry
+    }
+    return render(request, "encyclopedia/entry.html", context)
